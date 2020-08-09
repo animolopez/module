@@ -19,7 +19,7 @@ def showSpectrogram(x, length, N=(512), frs=(44100), frange=(8000), Window=('ham
     plt.ylabel("frequency [Hz]")
     plt.show()
 
-def showFFT(x, N=(None), start=(0), frs=(44100), frange=(8000)):
+def showFFT(x, N=(None), start=(0), frs=(44100), frange=(8000), amprange=(None)):
 
     if x.ndim != 1:
         error = "dim of signal must be 1."
@@ -38,9 +38,8 @@ def showFFT(x, N=(None), start=(0), frs=(44100), frange=(8000)):
     phaseSpectrum = [np.arctan2(int(c.imag), int(c.real)) for c in X]
 
     # 振幅スペクトルを描画
-    amprange = np.max(amplitudeSpectrum)
-    if amprange > 50:
-        amprange = 50
+    if amprange == None:
+        amprange = np.max(amplitudeSpectrum)
     plt.subplot(211)
     plt.plot(freqList, amplitudeSpectrum, linestyle='-')
     plt.axis([0, frange, 0, amprange])
@@ -55,7 +54,7 @@ def showFFT(x, N=(None), start=(0), frs=(44100), frange=(8000)):
     plt.ylabel("phase spectrum")
     plt.show()
 
-def showSTFT(x, N=(512), start=(0), frs=(44100), frange=(8000), window=('hamming')):
+def showSTFT(x, N=(512), start=(0), frs=(44100), frange=(8000), amprange=(None), window=('hamming')):
 
     if x.ndim != 1:
         error = "dim of signal must be 1."
@@ -80,9 +79,8 @@ def showSTFT(x, N=(512), start=(0), frs=(44100), frange=(8000), window=('hamming
     phaseSpectrum = [np.arctan2(int(c.imag), int(c.real)) for c in X]
 
     # 振幅スペクトルを描画
-    amprange = np.max(amplitudeSpectrum)
-    if amprange > 50:
-        amprange = 50
+    if amprange == None:
+        amprange = np.max(amplitudeSpectrum)
     plt.subplot(211)
     plt.plot(freqList, amplitudeSpectrum, linestyle='-')
     plt.axis([0, frange, 0, amprange])
