@@ -3,6 +3,11 @@ import numpy as np
 import scipy.fft
 
 def showSpectrogram(x, length, N=(512), frs=(44100), frange=(8000), Window=('hamming')):
+
+    if x.ndim != 1:
+        error = "dim of signal must be 1."
+        return print(error)
+
     if Window == 'hamming':
         Win = np.hamming(N)
     elif Window == 'hanning':
@@ -14,28 +19,79 @@ def showSpectrogram(x, length, N=(512), frs=(44100), frange=(8000), Window=('ham
     plt.ylabel("frequency [Hz]")
     plt.show()
 
-def showSpectrum(x, start=(0), N=(8192), frs=(44100), frange=(8000), Window=('hamming')):
-    if Window == 'hamming':
-        Win = np.hamming(N)
-    elif Window == 'hanning':
-        Win = np.hanning(N)
+def showFFT(x, N=(None), start=(0), frs=(44100), frange=(8000)):
 
-    x = Win * x[start:start+N]
-    X = scipy.fft.rfft(x[start:start+N])
-    freqList = scipy.fft.rfftfreq(N, d = 1.0/ frs)
+    if x.ndim != 1:
+        error = "dim of signal must be 1."
+        return print(error)
+
+    if N == None:
+        N = 2
+        while len(x) > N:
+            N *= 2
+        info = "N = %s" % N
+        print(info)
+
+    X = scipy.fft.fft(x, n=N)
+    freqList = scipy.fft.fftfreq(N, d = 1.0/ frs)
     amplitudeSpectrum = [np.sqrt(c.real ** 2 + c.imag ** 2) for c in X]
     phaseSpectrum = [np.arctan2(int(c.imag), int(c.real)) for c in X]
 
     # 振幅スペクトルを描画
+    amprange = np.max(amplitudeSpectrum)
+    if amprange > 50:
+        amprange = 50
     plt.subplot(211)
-    plt.plot(freqList, amplitudeSpectrum, marker= 'o', linestyle='-')
-    plt.axis([0, frange, 0, 2])
+    plt.plot(freqList, amplitudeSpectrum, linestyle='-')
+    plt.axis([0, frange, 0, amprange])
     plt.xlabel("frequency [Hz]")
     plt.ylabel("amplitude spectrum")
 
     # 位相スペクトルを描画
     plt.subplot(212)
-    plt.plot(freqList, phaseSpectrum, marker= 'o', linestyle='-')
+    plt.plot(freqList, phaseSpectrum, linestyle='-')
+    plt.axis([0, frange, -np.pi, np.pi])
+    plt.xlabel("frequency [Hz]")
+    plt.ylabel("phase spectrum")
+    plt.show()
+
+def showSTFT(x, N=(512), start=(0), frs=(44100), frange=(8000), window=('hamming')):
+
+    if x.ndim != 1:
+        error = "dim of signal must be 1."
+        return print(error)
+
+    if N == None:
+        N = 2
+        while len(x) > N:
+            N *= 2
+        info = "N = %s" % N
+        print(info)
+
+    if window == 'hamming':
+        Win = np.hamming(N)
+    elif window == 'hanning':
+        Win = np.hanning(N)
+
+    x = Win * x[start:start+N]
+    X = scipy.fft.fft(x, n=N)
+    freqList = scipy.fft.fftfreq(N, d = 1.0/ frs)
+    amplitudeSpectrum = [np.sqrt(c.real ** 2 + c.imag ** 2) for c in X]
+    phaseSpectrum = [np.arctan2(int(c.imag), int(c.real)) for c in X]
+
+    # 振幅スペクトルを描画
+    amprange = np.max(amplitudeSpectrum)
+    if amprange > 50:
+        amprange = 50
+    plt.subplot(211)
+    plt.plot(freqList, amplitudeSpectrum, linestyle='-')
+    plt.axis([0, frange, 0, amprange])
+    plt.xlabel("frequency [Hz]")
+    plt.ylabel("amplitude spectrum")
+
+    # 位相スペクトルを描画
+    plt.subplot(212)
+    plt.plot(freqList, phaseSpectrum, linestyle='-')
     plt.axis([0, frange, -np.pi, np.pi])
     plt.xlabel("frequency [Hz]")
     plt.ylabel("phase spectrum")
