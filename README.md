@@ -1,0 +1,2 @@
+# module
+my python module
