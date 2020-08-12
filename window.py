@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 from scipy import signal
 
 def sqrtCosEnv(length,rft=(0.005),fs=(44100)):
@@ -37,7 +38,7 @@ def CosEnv(length,rft=(0.005),fs=(44100)):
 
     return env
 
-def ButterworthBP(x,lowcut,highcut,fs,order=(None)):
+def ButterworthBP(x,lowcut,highcut,fs,order=(None),plot=('False')):
     """
     x       : input signal
     lowcut  : Lowcut frequency [Hz]
@@ -56,9 +57,18 @@ def ButterworthBP(x,lowcut,highcut,fs,order=(None)):
     sos = signal.butter(order, wn, btype='bandpass', output='sos', fs=fs)
     y = signal.sosfilt(sos, x)
 
+    if plot == 'True':
+        w, h = signal.sosfreqz(sos, worN=2000)
+        plt.plot((fs * 0.5 / np.pi) * w, abs(h), label="order = %d" % order)
+        plt.xlabel('Frequency (Hz)')
+        plt.ylabel('Gain')
+        plt.grid(True)
+        plt.legend(loc='best')
+        plt.show()
+
     return y
 
-def ButterworthLP(x,cutoff,fs,order=(None)):
+def ButterworthLP(x,cutoff,fs,order=(None),plot=('False')):
     """
     x       : input signal
     cutoff  : cutoff frequency [Hz]
@@ -75,9 +85,19 @@ def ButterworthLP(x,cutoff,fs,order=(None)):
     sos = signal.butter(order, wn, btype='lowpass', output='sos', fs=fs)
     y = signal.sosfilt(sos, x)
 
+    if plot == 'True':
+        w, h = signal.sosfreqz(sos, worN=2000)
+        plt.plot((fs * 0.5 / np.pi) * w, abs(h), label="order = %d" % order)
+        plt.xlabel('Frequency (Hz)')
+        plt.ylabel('Gain')
+        plt.grid(True)
+        plt.legend(loc='best')
+        plt.show()
+
+
     return y
 
-def ButterworthHP(x,cutoff,fs,order=(None)):
+def ButterworthHP(x,cutoff,fs,order=(None),plot=('False')):
     """
     x       : input signal
     cutoff  : cutoff frequency [Hz]
@@ -93,5 +113,14 @@ def ButterworthHP(x,cutoff,fs,order=(None)):
 
     sos = signal.butter(order, wn, btype='highpass', output='sos', fs=fs)
     y = signal.sosfilt(sos, x)
+
+    if plot == 'True':
+        w, h = signal.sosfreqz(sos, worN=2000)
+        plt.plot((fs * 0.5 / np.pi) * w, abs(h), label="order = %d" % order)
+        plt.xlabel('Frequency (Hz)')
+        plt.ylabel('Gain')
+        plt.grid(True)
+        plt.legend(loc='best')
+        plt.show()
 
     return y
