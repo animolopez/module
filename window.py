@@ -4,9 +4,9 @@ from scipy import signal
 
 def sqrtCosEnv(length,rft=(0.005),fs=(44100)):
     """
-    rft    : rise and fall time [s]
-    length : total length of window [s]
-    fs    : sampling freq [Hz]
+    rft    : Rise and fall time [s]
+    length : Total length of window [s]
+    fs    : Sampling freq [Hz]
     """
     rfsamp = int(np.round(rft * fs))
     windowsamp = int(np.round(length * fs))
@@ -22,9 +22,9 @@ def sqrtCosEnv(length,rft=(0.005),fs=(44100)):
 
 def CosEnv(length,rft=(0.005),fs=(44100)):
     """
-    rft    : rise and fall time [s]
-    length : total length of window [s]
-    fs    : sampling freq [Hz]
+    rft    : Rise and fall time [s]
+    length : Total length of window [s]
+    fs    : Sampling freq [Hz]
     """
     rfsamp = int(np.round(rft * fs))
     windowsamp = int(np.round(length * fs))
@@ -40,7 +40,7 @@ def CosEnv(length,rft=(0.005),fs=(44100)):
 
 def ButterworthBP(x,lowcut,highcut,fs,order=(None),plot=('False')):
     """
-    x       : input signal
+    x       : Input signal
     lowcut  : Lowcut frequency [Hz]
     highcut : Highcut frequency [Hz]
     fs      : Sampling frequency [Hz]
@@ -70,8 +70,8 @@ def ButterworthBP(x,lowcut,highcut,fs,order=(None),plot=('False')):
 
 def ButterworthLP(x,cutoff,fs,order=(None),plot=('False')):
     """
-    x       : input signal
-    cutoff  : cutoff frequency [Hz]
+    x       : Input signal
+    cutoff  : Cutoff frequency [Hz]
     fs      : Sampling frequency [Hz]
     order   : Order of the butterworth bandpath filter
     """
@@ -94,13 +94,12 @@ def ButterworthLP(x,cutoff,fs,order=(None),plot=('False')):
         plt.legend(loc='best')
         plt.show()
 
-
     return y
 
 def ButterworthHP(x,cutoff,fs,order=(None),plot=('False')):
     """
-    x       : input signal
-    cutoff  : cutoff frequency [Hz]
+    x       : Input signal
+    cutoff  : Cutoff frequency [Hz]
     fs      : Sampling frequency [Hz]
     order   : Order of the butterworth bandpath filter
     """
@@ -122,5 +121,23 @@ def ButterworthHP(x,cutoff,fs,order=(None),plot=('False')):
         plt.grid(True)
         plt.legend(loc='best')
         plt.show()
+
+    return y
+
+def GaussWin(length,fs,sigma=(None)):
+    """
+    length : Window length [s]
+    fs     : Sampling frequency [Hz]
+    sigma  : sigma
+    F(n,σ) = (1 / σ * (2π)^(-1/2)) * e^((-1/2) * (n/σ)^2)
+    """
+    samp_length = length * fs
+    half_samp_length = samp_length / 2
+
+    if sigma == None:
+        sigma = samp_length / 8
+
+    index = np.arange(-half_samp_length,half_samp_length,1)
+    y = np.reciprocal(np.sqrt(2 * np.pi) * sigma) * np.exp(-0.5 * np.square(index / sigma))
 
     return y

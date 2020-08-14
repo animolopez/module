@@ -29,10 +29,10 @@ def Leq(x, dBref=(2e-5)):
     # y = 10 * log10((1/n)*Σ((P^2)/(Pref^2)))
     return y
 
-def LeqLT(x, frs=(44100), t=(0.050), dBref=(2e-5)):
+def LeqLT(x, fs=(44100), t=(0.050), dBref=(2e-5)):
     # 離散時間信号(x, n)の長期平均等価騒音レベル[dB]を求める, モノラル用
     n = x.shape[0]  # 信号xのサンプル数
-    tsamp =  int(frs * t)
+    tsamp =  int(fs * t)
     N = int(np.ceil(n / tsamp))
     zero_array = np.zeros(int((N * tsamp) - n))
     X = np.concatenate([x, zero_array])
